@@ -1,0 +1,50 @@
+Vagrant.configure("2") do |config|
+    # Local machine that will invoke outrun
+    config.vm.define "local" do |local|
+        local.vm.box = "generic/ubuntu2004"
+        local.vm.network "private_network", ip: "10.0.0.200"
+
+        # Install outrun
+        local.vm.provision "shell", inline: "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq fuse3 python3 python3-pip sshpass"
+
+        local.vm.provision "file", source: "../../../outrun", destination: "$HOME/outrun/outrun", run: "always"
+        local.vm.provision "file", source: "../../../setup.py", destination: "$HOME/outrun/setup.py", run: "always"
+        local.vm.provision "file", source: "../../../README.md", destination: "$HOME/outrun/README.md", run: "always"
+
+        local.vm.provision "shell", privileged: true, inline: "pip3 install -e ./outrun", run: "always"
+
+        # Fix file permissions that may change as a result of command above
+        local.vm.provision "shell", privileged: true, inline: "chown vagrant:vagrant -R ./outrun", run: "always"
+
+        # Set up SSH for connection with remote
+        local.vm.provision "shell", privileged: false, inline: "echo -e 'Host remote\n\tHostname 10.0.0.201\n\tUser vagrant' > .ssh/config", run: "always"
+        local.vm.provision "shell", privileged: false, inline: "yes | ssh-keygen -q -f .ssh/id_rsa -q -N '' && ssh-keyscan 10.0.0.201 > ~/.ssh/known_hosts && sshpass -p vagrant ssh-copy-id vagrant@10.0.0.201", run: "always"
+
+        # Install programs to test with outrun
+        local.vm.provision "shell", inline: "DEBIAN_FRONTEND=noninteractive apt-get install -yq ffmpeg lua5.3"
+    end
+
+    # Remote machine that will run commands
+    #
+    # Alpine has specifically been chosen as distro that significantly differs from
+    # Ubuntu (different package manager, very minimalistic, musl vs. glibc)
+    config.vm.define "remote" do |remote|
+        remote.vm.box = "generic/alpine310"
+        remote.vm.network "private_network", ip: "10.0.0.201"
+
+        # Install outrun
+        remote.vm.provision "shell", inline: "apk update && apk add python3 build-base python3-dev zeromq-dev fuse3 sshpass"
+
+        remote.vm.provision "file", source: "../../../outrun", destination: "$HOME/outrun/outrun", run: "always"
+        remote.vm.provision "file", source: "../../../setup.py", destination: "$HOME/outrun/setup.py", run: "always"
+        remote.vm.provision "file", source: "../../../README.md", destination: "$HOME/outrun/README.md", run: "always"
+
+        remote.vm.provision "shell", privileged: true, inline: "pip3 install -e ./outrun", run: "always"
+
+        # Fix file permissions that may change as a result of command above
+        remote.vm.provision "shell", privileged: true, inline: "chown vagrant:vagrant -R ./outrun", run: "always"
+
+        # Ensure that outrun can be found
+        remote.vm.provision "shell", privileged: false, inline: "echo 'PATH=/home/vagrant/.local/bin:$PATH' >> ~/.profile"
+    end
+end

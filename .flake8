@@ -1,0 +1,17 @@
+[flake8]
+# Black line length.
+max-line-length = 88
+
+# flake8-docstring conflicts with black in case method starts with a nested function.
+extend-ignore = D202
+
+application-import-names = outrun
+import-order-style = google
+
+per-file-ignores =
+    # No point in documenting thin wrappers around os.* functions or RPC calls
+    outrun/filesystem/service.py:D102
+    outrun/filesystem/filesystem.py:D102
+
+# Ignore lack of comments in unit tests
+exclude = outrun/tests/*
