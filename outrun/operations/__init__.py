@@ -25,7 +25,7 @@ The remote instance waits for these services to be ready and connects to them th
 the previously set up SSH tunnels.
 
 The process of mirroring the local environment can now begin and starts by mounting a
-FUSE file system that, in essense, simply forwards all of its I/O calls to the local
+FUSE file system that, in essence, simply forwards all of its I/O calls to the local
 file system RPC service. The command to run and its context is then retrieved from the
 environment RPC service. A new process is started with the original environment
 variables and original command that chroots into the mirrored file system, sets the

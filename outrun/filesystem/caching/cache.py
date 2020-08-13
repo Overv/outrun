@@ -282,7 +282,7 @@ class RemoteCache:
         Create cache entries for prefetched entries if possible.
 
         Prefetched entries are saved on a best-effort basis depending on whether a lock
-        can be acquired for the cache entry. This is to prevent deadlocks from occuring
+        can be acquired for the cache entry. This is to prevent deadlocks from occurring
         when multiple threads are trying to save overlapping prefetched data.
 
         There is one exception to this rule and that's where we're prefetching data for

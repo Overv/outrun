@@ -141,7 +141,7 @@ If you would like to read more details about outrun and its design decisions, th
 
 There are a couple of things to keep in mind while using outrun:
 
-* File system performance remains a bottleneck, so the most suitable workloads are computionally constrained tasks like ray tracing and video encoding. Using outrun for something like `git status` works, but is not recommended.
+* File system performance remains a bottleneck, so the most suitable workloads are computationally constrained tasks like ray tracing and video encoding. Using outrun for something like `git status` works, but is not recommended.
 * Since the software to be executed is copied from your own machine to the remote machine, it must be binary compatible. It’s not possible to set up a session from an x86 machine to an ARM machine, for example.
 * The command will use the network and date/time of the remote machine.
     * If you want to access local endpoints, then they must be explicitly forwarded by using the SSH flags parameter to set up [remote forwarding](https://www.ssh.com/ssh/tunneling/example#remote-forwarding).
