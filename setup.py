@@ -50,7 +50,7 @@ setuptools.setup(
     author="Alexander Overvoorde",
     author_email="overv161@gmail.com",
     license="Apache",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=["outrun.tests*"]),
     entry_points={"console_scripts": ["outrun = outrun.__main__:main"]},
     install_requires=install_requires,
     extras_require=extras_require,
