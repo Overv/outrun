@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from configparser import ConfigParser, SectionProxy
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 
 from outrun.logger import log
@@ -35,7 +35,7 @@ class CacheConfig:
 class Config:
     """Configuration variables."""
 
-    cache: CacheConfig = CacheConfig()
+    cache: CacheConfig = field(default_factory=CacheConfig)
 
     @staticmethod
     def load(filename: str) -> Config:
